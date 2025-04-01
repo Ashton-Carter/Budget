@@ -5,28 +5,32 @@ import (
 	"os"
 	"encoding/csv"
     "strconv"
-
+	"budgettracker/internal/model"
+	"time"
 )
 
-type Transaction struct {
-	Details string
-	Posting_date string
-	Description string
-	Amount float64
-	Type_ string
-	Balance float64
-	Check_Slip string
+// type Transaction struct {
+// 	Details string
+// 	Posting_date string
+// 	Description string
+// 	Amount float64
+// 	Type_ string
+// 	Balance float64
+// 	Check_Slip string
+// }
+
+var correct_types [7]string= [7]string{"Details","Posting Date","Description","Amount","Type","Balance","Check or Slip #"}
+
+func ParseCSV(path string) []model.Transaction{
+	return ReadFile(path)
 }
 
-func ParseCSV(path string) {
-	ReadFile(path)
-}
-
-func ReadFile(filepath string) {
+func ReadFile(filepath string) []model.Transaction{
+	var transactions []model.Transaction
 	file, err := os.Open(filepath)
     if err != nil {
         fmt.Println("Error opening file:", err)
-        return
+        return nil
     }
     defer file.Close()
 
@@ -37,13 +41,19 @@ func ReadFile(filepath string) {
     records, err := reader.ReadAll()
     if err != nil {
         fmt.Println("Error reading CSV:", err)
-        return
+        return nil
     }
 
 	expectedFields := 7
 
 	for i, record := range records {
 		if(i == 0) {
+			for i, tpe := range correct_types {
+				if tpe != record[i] {
+					fmt.Println("Incorrect File Format")
+					return nil
+				}
+			}
 			continue
 		}
 
@@ -51,19 +61,22 @@ func ReadFile(filepath string) {
 			fmt.Printf("Skipping short row %d\n", i+1)
 			continue
 		} else if len(record) > expectedFields {
-			fmt.Printf("Row %d has extra fields, trimming...\n", i+1)
+			//fmt.Printf("Row %d has extra fields, trimming...\n", i+1)
 			record = record[:expectedFields]
 		}
 
 		curr_transaction := ReadToTransaction(record)
-		printTransaction(curr_transaction);
-		break
+		if curr_transaction.Amount < 0 && WithinLast3Months(curr_transaction.Posting_date){	
+			transactions = append(transactions, curr_transaction)
+		}
+		// fmt.Println("Added")
 	}
+	return transactions
 
 }
 
-func ReadToTransaction(record []string) Transaction {
-	var transaction Transaction
+func ReadToTransaction(record []string) model.Transaction {
+	var transaction model.Transaction
 	transaction.Details = record[0]
 	transaction.Posting_date = record[1]
 	transaction.Description = record[2]
@@ -90,7 +103,7 @@ func ReadToTransaction(record []string) Transaction {
 }
 
 
-func printTransaction(trans Transaction) {
+func printTransaction(trans model.Transaction) {
 	fmt.Println("Details:", trans.Details)
 	fmt.Println("Posting Date:", trans.Posting_date) 
 	fmt.Println("Transaction:", trans.Description)
@@ -99,3 +112,16 @@ func printTransaction(trans Transaction) {
 	fmt.Println("Balance:", trans.Balance) 
 	fmt.Println("Slip:", trans.Check_Slip)
 }
+
+func WithinLast3Months (dateStr string) bool {
+    layout := "01/02/2006" // for MM/DD/YYYY
+    postingDate, err := time.Parse(layout, dateStr)
+    if err != nil {
+        fmt.Println("Error parsing date:", err)
+        return false
+    }
+
+    threeMonthsAgo := time.Now().AddDate(0, -3, 0)
+    return postingDate.After(threeMonthsAgo)
+}
+
