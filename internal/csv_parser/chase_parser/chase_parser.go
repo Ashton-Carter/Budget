@@ -66,7 +66,7 @@ func ReadFile(filepath string) []model.Transaction{
 		}
 
 		curr_transaction := ReadToTransaction(record)
-		if curr_transaction.Amount < 0 && WithinLast3Months(curr_transaction.Posting_date){	
+		if WithinLast3Months(curr_transaction.Posting_date){	
 			transactions = append(transactions, curr_transaction)
 		}
 		// fmt.Println("Added")
@@ -113,7 +113,7 @@ func printTransaction(trans model.Transaction) {
 	fmt.Println("Slip:", trans.Check_Slip)
 }
 
-func WithinLast3Months (dateStr string) bool {
+func WithinLast3Months(dateStr string) bool {
     layout := "01/02/2006" // for MM/DD/YYYY
     postingDate, err := time.Parse(layout, dateStr)
     if err != nil {
@@ -121,7 +121,12 @@ func WithinLast3Months (dateStr string) bool {
         return false
     }
 
-    threeMonthsAgo := time.Now().AddDate(0, -3, 0)
-    return postingDate.After(threeMonthsAgo)
+    now := time.Now()
+
+    startOfRange := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC).AddDate(0, -3, 0)
+
+    endOfRange := now
+
+    return !postingDate.Before(startOfRange) && !postingDate.After(endOfRange)
 }
 

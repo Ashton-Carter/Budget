@@ -119,8 +119,6 @@ func SaveToCSV(filename string, transactions []Transaction_type) error {
     writer := csv.NewWriter(file)
     defer writer.Flush()
 
-    
-    writer.Write([]string{"Details", "Posting_date", "Description", "Amount", "Type_", "Balance", "Check_Slip"})
 
     for i, tx := range transactions {
         writer.Write([]string{
