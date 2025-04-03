@@ -20,7 +20,7 @@ type User struct {
 	Email string
 	GoogleID string
 	PictureURL string
-	CreatedAt float64
+	CreatedAt string
 	LastLogin string
 }
 
