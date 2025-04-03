@@ -15,12 +15,9 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type Transaction_type struct {
-	Transaction model.Transaction
-	T_type string
-}
 
-func Get_types(transactions []model.Transaction) []Transaction_type{
+
+func Get_types(transactions []model.Transaction) []model.Transaction_type{
 	//var with_types []Transaction_type
 	var prompt = Create_prompt(transactions)
 	var chat_response = AiCall(prompt)
@@ -74,15 +71,15 @@ func AiCall(prompt string) string {
     return resp.Choices[0].Message.Content
 }
 
-func Add_types(chat_response string, transactions []model.Transaction) []Transaction_type{
-	var transaction_final []Transaction_type
+func Add_types(chat_response string, transactions []model.Transaction) []model.Transaction_type{
+	var transaction_final []model.Transaction_type
 
 	scanner := bufio.NewScanner(strings.NewReader(chat_response))
 	for scanner.Scan() {
 		line := scanner.Text()
 		int_str := ""
 		var text_start int = 0
-		var curr_transaction Transaction_type
+		var curr_transaction model.Transaction_type
 		for i, letter := range line {
 			if letter == ':' {
 				text_start = i
@@ -109,7 +106,7 @@ func Add_types(chat_response string, transactions []model.Transaction) []Transac
 }
 
 
-func SaveToCSV(filename string, transactions []Transaction_type) error {
+func SaveToCSV(filename string, transactions []model.Transaction_type) error {
     file, err := os.Create(filename)
     if err != nil {
         return err

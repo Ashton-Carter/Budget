@@ -18,8 +18,13 @@ type User struct {
 	ID int
 	Username string
 	Email string
-	GoogleID float64
+	GoogleID string
 	PictureURL string
 	CreatedAt float64
 	LastLogin string
+}
+
+type Transaction_type struct {
+	Transaction Transaction
+	T_type string
 }

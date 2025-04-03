@@ -82,5 +82,8 @@ func Connect_to_sql() (bool, *sql.DB){
 	return true, db
 }
 
+func LastLoginUpdate(google_id string){
+	
+}
 
 
