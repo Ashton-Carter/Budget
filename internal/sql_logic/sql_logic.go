@@ -13,17 +13,9 @@ import(
 
 func CSVtoDV(filename string, id int)  {
 
-
-	load := godotenv.Load()
-	if load != nil {
-		fmt.Printf("Couldnt get env: %s", load)
-	}
-
-	dsn := os.Getenv("SQL_URL")
-
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		fmt.Printf("impossible to create the connection: %s", err)
+	res, db := Connect_to_sql()
+	if !res {
+		fmt.Printf("impossible to create the connection-csv")
 	}
 	defer db.Close()
 
@@ -75,7 +67,20 @@ func CSVtoDV(filename string, id int)  {
 	}
 }
 
+func Connect_to_sql() (bool, *sql.DB){
+	load := godotenv.Load()
+	if load != nil {
+		return false, nil
+	}
 
+	dsn := os.Getenv("SQL_URL")
+
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return false, nil
+	}
+	return true, db
+}
 
 
 
