@@ -2,7 +2,6 @@ package chase_parser
 
 import (
 	"fmt"
-	"os"
 	"encoding/csv"
     "strconv"
 	"budgettracker/internal/model"
@@ -22,59 +21,7 @@ import (
 
 var correct_types [7]string= [7]string{"Details","Posting Date","Description","Amount","Type","Balance","Check or Slip #"}
 
-func ParseCSV(path string) []model.Transaction{
-	return ReadFile(path)
-}
 
-func ReadFile(filepath string) []model.Transaction{
-	var transactions []model.Transaction
-	file, err := os.Open(filepath)
-    if err != nil {
-        fmt.Println("Error opening file:", err)
-        return nil
-    }
-    defer file.Close()
-
-	reader := csv.NewReader(file)
-	reader.FieldsPerRecord = -1 //flexible number of columns
-	reader.LazyQuotes = true //allows quotes to have commas
-
-    records, err := reader.ReadAll()
-    if err != nil {
-        fmt.Println("Error reading CSV:", err)
-        return nil
-    }
-
-	expectedFields := 7
-
-	for i, record := range records {
-		if(i == 0) {
-			for i, tpe := range correct_types {
-				if tpe != record[i] {
-					fmt.Println("Incorrect File Format")
-					return nil
-				}
-			}
-			continue
-		}
-
-		if len(record) < expectedFields {
-			fmt.Printf("Skipping short row %d\n", i+1)
-			continue
-		} else if len(record) > expectedFields {
-			//fmt.Printf("Row %d has extra fields, trimming...\n", i+1)
-			record = record[:expectedFields]
-		}
-
-		curr_transaction := ReadToTransaction(record)
-		if WithinLast3Months(curr_transaction.Posting_date){	
-			transactions = append(transactions, curr_transaction)
-		}
-		// fmt.Println("Added")
-	}
-	return transactions
-
-}
 
 func ReadToTransaction(record []string) model.Transaction {
 	var transaction model.Transaction
