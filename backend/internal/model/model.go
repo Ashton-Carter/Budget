@@ -15,13 +15,13 @@ type Transaction struct {
 }
 
 type User struct {
-	ID int
-	Username string
-	Email string
-	GoogleID string
-	PictureURL string
-	CreatedAt string
-	LastLogin string
+	ID         int    `json:"id"`
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	GoogleID   string `json:"google_id"`
+	PictureURL string `json:"picture_url"`
+	CreatedAt  string `json:"created_at"`
+	LastLogin  string `json:"last_login"`
 }
 
 type Transaction_type struct {

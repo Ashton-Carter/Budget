@@ -24,6 +24,7 @@ func Add_user(username string, email string, google_id string, picture_url strin
 	defer db.Close()
 
 	l_login := time.Now().Format("2006-01-02")
+	
 	insert_query := "INSERT INTO users (username,email,google_id,picture_url,last_login) VALUES (?, ?, ?, ?, ?)"
 
 	_, err := db.Exec(insert_query, username, email, google_id, picture_url, l_login)

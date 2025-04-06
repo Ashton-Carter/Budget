@@ -8,6 +8,7 @@ import (
     "budgettracker/internal/router_commands"
     "fmt"
     "github.com/gin-gonic/gin"
+    "github.com/gin-contrib/cors"
 
 )
 
@@ -18,9 +19,11 @@ func main() {
     // sql_logic.CSVtoDV("dtb.csv", 1)
     //user_handling.Add_user("GodEmperor", "NO", "BEAST", "GOD_EMPEROR.png")
     r := gin.Default()
+    r.Use(cors.Default())
     r.POST("/auth/google", router_commands.GoogleAuth)
     r.GET("/users/:google_id", router_commands.GetUser)
     r.GET("/transactions/:google_id", router_commands.GetTransactions)
+    r.POST("/upload", router_commands.FromCSV)
 
     r.Run(":8080")
 

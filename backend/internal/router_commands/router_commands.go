@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"database/sql"
     _ "github.com/go-sql-driver/mysql"
+	"fmt"
 )
 
 func GoogleAuth(c *gin.Context) {
@@ -109,5 +110,24 @@ func GetTransactions(c *gin.Context) {
 
 
 
+
+}
+
+func FromCSV(c *gin.Context) {
+    googleID := c.PostForm("google_id")
+    fmt.Println("Google ID:", googleID)
+
+    uploadedFile, err := c.FormFile("file")
+    if err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "No file uploaded"})
+        return
+    }
+
+    file, err := uploadedFile.Open()
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to open file"})
+        return
+    }
+    defer file.Close()
 
 }

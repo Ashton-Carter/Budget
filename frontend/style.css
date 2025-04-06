@@ -1,0 +1,35 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body styling */
+  body {
+    height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa, #e0e7ff);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Header */
+  h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 2rem;
+  }
+  
+  /* Google button container */
+  .g_id_signin {
+    margin-top: 1rem;
+  }
+  
+  /* Optional: style the onload container for spacing */
+  #g_id_onload {
+    margin-bottom: 0.5rem;
+  }
+  
