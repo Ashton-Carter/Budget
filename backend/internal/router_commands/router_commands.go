@@ -5,6 +5,8 @@ import (
 	"budgettracker/internal/sql_logic"
 	"budgettracker/internal/user_handling"
 	"budgettracker/internal/model"
+	"budgettracker/internal/csv_parser/chase_parser"
+	"budgettracker/internal/transaction_type"
 	"net/http"
 	"database/sql"
     _ "github.com/go-sql-driver/mysql"
@@ -114,20 +116,32 @@ func GetTransactions(c *gin.Context) {
 }
 
 func FromCSV(c *gin.Context) {
+
     googleID := c.PostForm("google_id")
     fmt.Println("Google ID:", googleID)
 
     uploadedFile, err := c.FormFile("file")
     if err != nil {
+		fmt.Println("No file uploaded")
         c.JSON(http.StatusBadRequest, gin.H{"error": "No file uploaded"})
         return
     }
 
     file, err := uploadedFile.Open()
     if err != nil {
+		fmt.Println("Unable to open file")
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to open file"})
         return
     }
     defer file.Close()
+
+	transactions := chase_parser.ParseCSVFile(file)
+	fmt.Println("Parsed successfully")
+    type_trans := transaction_type.Get_types(transactions)
+	fmt.Println("Got types")
+    sql_logic.TranstoDV(type_trans, googleID)
+	fmt.Println("All done!")
+
+	c.JSON(http.StatusOK, gin.H{"message": "Success"})
 
 }

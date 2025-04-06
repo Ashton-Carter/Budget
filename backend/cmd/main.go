@@ -13,11 +13,6 @@ import (
 )
 
 func main() {
-    // transactions := chase_parser.ParseCSV("internal/csv_parser/test.CSV")
-    // type_trans := transaction_type.Get_types(transactions)
-    // transaction_type.SaveToCSV("dtb.csv", type_trans)
-    // sql_logic.CSVtoDV("dtb.csv", 1)
-    //user_handling.Add_user("GodEmperor", "NO", "BEAST", "GOD_EMPEROR.png")
     r := gin.Default()
     r.Use(cors.Default())
     r.POST("/auth/google", router_commands.GoogleAuth)

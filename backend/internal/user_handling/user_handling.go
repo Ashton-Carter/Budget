@@ -50,9 +50,9 @@ func Find_user(googleID string) (int, model.User){
         &user.ID,
         &user.Username,
         &user.Email,
+		&user.CreatedAt,
         &user.GoogleID,
         &user.PictureURL,
-        &user.CreatedAt,
         &user.LastLogin,
     )
 

@@ -7,6 +7,7 @@ import (
     "strconv"
 	"budgettracker/internal/model"
 	"time"
+	"mime/multipart"
 )
 
 // type Transaction struct {
@@ -130,3 +131,49 @@ func WithinLast3Months(dateStr string) bool {
     return !postingDate.Before(startOfRange) && !postingDate.After(endOfRange)
 }
 
+
+//temporary test from filepath func
+
+func ParseCSVFile(file multipart.File) []model.Transaction{
+	var transactions []model.Transaction
+	
+	reader := csv.NewReader(file)
+	reader.FieldsPerRecord = -1 //flexible number of columns
+	reader.LazyQuotes = true //allows quotes to have commas
+
+    records, err := reader.ReadAll()
+    if err != nil {
+        fmt.Println("Error reading CSV:", err)
+        return nil
+    }
+
+	expectedFields := 7
+
+	for i, record := range records {
+		if(i == 0) {
+			for i, tpe := range correct_types {
+				if tpe != record[i] {
+					fmt.Println("Incorrect File Format")
+					return nil
+				}
+			}
+			continue
+		}
+
+		if len(record) < expectedFields {
+			fmt.Printf("Skipping short row %d\n", i+1)
+			continue
+		} else if len(record) > expectedFields {
+			//fmt.Printf("Row %d has extra fields, trimming...\n", i+1)
+			record = record[:expectedFields]
+		}
+
+		curr_transaction := ReadToTransaction(record)
+		if WithinLast3Months(curr_transaction.Posting_date){	
+			transactions = append(transactions, curr_transaction)
+		}
+		// fmt.Println("Added")
+	}
+	return transactions
+
+}

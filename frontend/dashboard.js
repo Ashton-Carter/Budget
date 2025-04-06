@@ -4,6 +4,8 @@ if (!user) {
 }
 
 document.getElementById("user-info").innerText = `Logged in as ${user.username} (${user.email})`;
+console.log("User object in localStorage:", user);
+
 
 // Handle CSV upload
 document.getElementById("csv-form").addEventListener("submit", function (e) {
