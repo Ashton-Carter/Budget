@@ -8,7 +8,6 @@ import (
 	"bufio"
 	"strings"
 	"strconv"
-	"encoding/csv"
 
     openai "github.com/sashabaranov/go-openai"
 	//GET RID OF THIS BEFORE PRODUCTION
@@ -106,30 +105,3 @@ func Add_types(chat_response string, transactions []model.Transaction) []model.T
 }
 
 
-func SaveToCSV(filename string, transactions []model.Transaction_type) error {
-    file, err := os.Create(filename)
-    if err != nil {
-        return err
-    }
-    defer file.Close()
-
-    writer := csv.NewWriter(file)
-    defer writer.Flush()
-
-
-    for i, tx := range transactions {
-        writer.Write([]string{
-            strconv.Itoa(i),
-			tx.Transaction.Details,
-            tx.Transaction.Posting_date,
-			tx.Transaction.Description,
-			strconv.FormatFloat(tx.Transaction.Amount, 'f', 2, 64),
-			tx.Transaction.Type_,
-			strconv.FormatFloat(tx.Transaction.Balance, 'f', 2, 64),
-			tx.Transaction.Check_Slip,
-            tx.T_type,
-        })
-    }
-
-    return nil
-}
