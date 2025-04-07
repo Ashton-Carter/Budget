@@ -62,6 +62,7 @@ func GetTransactions(c *gin.Context) {
 	google_id := c.Param("google_id")
 	connect, db := sql_logic.Connect_to_sql()
 	if !connect {
+		fmt.Println("Database connection error")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection error"})
 		return
 	}
@@ -72,21 +73,25 @@ func GetTransactions(c *gin.Context) {
 	err := db.QueryRow(usr_query, google_id).Scan(&q_id)
 
 	if err == sql.ErrNoRows {
+		fmt.Println("User not found in users")
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found in users"})
 		return
 	} else if err != nil {
+		fmt.Println("Database error finding user_id")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error finding user_id"})
 		return
 	}
 
 	trans_queries := "SELECT details, posting_date, amount, type, balance, category from transactions WHERE user_id = ?"
-	rows, rerr := db.Query(trans_queries, google_id)
+	rows, rerr := db.Query(trans_queries, q_id)
 	var transactions []model.Transaction_type
 
 	if rerr == sql.ErrNoRows {
+		fmt.Println("Done, no rows!")
 		c.JSON(http.StatusOK, transactions)
 		return
 	} else if rerr != nil {
+		fmt.Println("Database error finding user_id")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error finding user_id"})
 		return
 	}
@@ -102,12 +107,12 @@ func GetTransactions(c *gin.Context) {
 			&tx.Transaction.Balance,
 			&tx.T_type,
 		); err != nil {
+			fmt.Println("Failed to scan row")
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to scan row"})
 			return
 		}
 		transactions = append(transactions, tx)
 	}
-
 	c.JSON(http.StatusOK, transactions)
 }
 
