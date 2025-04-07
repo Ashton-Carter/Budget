@@ -20,6 +20,8 @@ func main() {
     r.GET("/transactions/:google_id", router_commands.GetTransactions)
     r.POST("/upload", router_commands.FromCSV)
 
+    //lets add a get for the past 3 months data, maybe just a date range or something
+
     r.Run(":8080")
 
     fmt.Println("Done")
