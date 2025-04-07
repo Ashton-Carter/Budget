@@ -109,10 +109,6 @@ func GetTransactions(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, transactions)
-
-
-
-
 }
 
 func FromCSV(c *gin.Context) {
