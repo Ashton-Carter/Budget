@@ -10,3 +10,5 @@ TODO;
 REFACTOR JS
 
 REMOVE NODES FROM GIT
+
+ADD 3 new DATABASES: Goals, Budgets, Categories
