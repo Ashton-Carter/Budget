@@ -5,3 +5,6 @@ CSV parser, transaction history
 Transactions from email
 Email recognition using LL
 (initial only)
+
+TODO;
+REFACTOR JS
