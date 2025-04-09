@@ -8,3 +8,5 @@ Email recognition using LL
 
 TODO;
 REFACTOR JS
+
+REMOVE NODES FROM GIT
