@@ -28,3 +28,12 @@ type Transaction_type struct {
 	Transaction Transaction
 	T_type string
 }
+
+type Budget struct {
+	Budget_id int
+	User_id int
+	Name string
+	Created_at string
+	Category_id int
+	Amount float64
+}

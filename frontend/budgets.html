@@ -93,7 +93,40 @@
       </ul>
     </div>
   </div>
-
+  <!-- Budget Modal -->
+<div id="budget-modal" style="display: none;" class="modal-overlay">
+    <div class="modal">
+      <h3>Create New Budget</h3>
+  
+      <label>
+        <input type="radio" name="budget-type" value="total" checked />
+        By Total
+      </label>
+      <label>
+        <input type="radio" name="budget-type" value="category" />
+        By Category
+      </label>
+  
+      <!-- Total input -->
+      <div id="total-budget-input">
+        <label for="total-budget">Weekly Total ($):</label>
+        <input type="number" id="total-budget" min="0" />
+      </div>
+  
+      <!-- Category inputs -->
+      <div id="category-budget-inputs" style="display: none;">
+        <label>Weekly Budget Per Category:</label>
+        <div id="category-input-list">
+          <!-- JS will populate categories here -->
+        </div>
+      </div>
+  
+      <div class="modal-buttons">
+        <button id="save-budget">Save</button>
+        <button id="cancel-budget">Cancel</button>
+      </div>
+    </div>
+  </div>
   <script src="budgets.js" defer></script>
 </body>
 </html>

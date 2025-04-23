@@ -162,8 +162,6 @@ func FromCSV(c *gin.Context) {
 
 func GetBudgets(c *gin.Context) {
 	google_id := c.Param("google_id")
-	start_date := c.Query("start_date")
-	end_date := c.Query("end_date")
 	connect, db := sql_logic.Connect_to_sql()
 	if !connect {
 		fmt.Println("Database connection error")
@@ -186,48 +184,42 @@ func GetBudgets(c *gin.Context) {
 		return
 	}
 
-	trans_queries := `
-		SELECT 
-			t.details, 
-			t.posting_date, 
-			t.amount, 
-			t.type, 
-			t.balance, 
-			c.name AS category_name
-		FROM transactions t
-		JOIN categories c ON t.category = c.category_id
-		WHERE t.user_id = ? 
-		AND t.posting_date BETWEEN ? AND ?
+	budget_queries := `
+		SELECT *
+		FROM budgets
+		INNER JOIN budget_category
+			ON budgets.budget_id = budget_category.budget_id
+		WHERE user_id = ?
 		`
-	rows, rerr := db.Query(trans_queries, q_id, start_date, end_date)
-	var transactions []model.Transaction_type
+	rows, rerr := db.Query(budget_queries, q_id)
+	var budgets []model.Budget
 
 	if rerr == sql.ErrNoRows {
 		fmt.Println("Done, no rows!")
-		c.JSON(http.StatusOK, transactions)
+		c.JSON(http.StatusOK, budgets)
 		return
 	} else if rerr != nil {
-		fmt.Println("Database error finding user_id or dates")
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error finding user_id or dates"})
+		fmt.Println("Database error finding user_id")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error finding user_id"})
 		return
 	}
 
 
 	for rows.Next() {
-		var tx model.Transaction_type
+		var bud model.Budget
 		if err := rows.Scan(
-			&tx.Transaction.Details,
-			&tx.Transaction.Posting_date,
-			&tx.Transaction.Amount,
-			&tx.Transaction.Type_,
-			&tx.Transaction.Balance,
-			&tx.T_type,
+			&bud.Budget_id,
+			&bud.User_id,
+			&bud.Name,
+			&bud.Created_at,
+			&bud.Category_id,
+			&bud.Amount,
 		); err != nil {
 			fmt.Println("Failed to scan row")
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to scan row"})
 			return
 		}
-		transactions = append(transactions, tx)
+		budgets = append(budgets, bud)
 	}
-	c.JSON(http.StatusOK, transactions)
+	c.JSON(http.StatusOK, budgets)
 }
