@@ -18,6 +18,7 @@ func main() {
     r.POST("/auth/google", router_commands.GoogleAuth)
     r.GET("/users/:google_id", router_commands.GetUser)
     r.GET("/transactions/:google_id", router_commands.GetTransactions)
+    r.GET("/budgets/:google_id", router_commands.GetBudgets)
     r.POST("/upload", router_commands.FromCSV)
 
     //lets add a get for the past 3 months data, maybe just a date range or something

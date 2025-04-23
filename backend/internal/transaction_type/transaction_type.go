@@ -46,7 +46,7 @@ func AiCall(prompt string) string {
     client := openai.NewClient(apiKey)
     ctx := context.Background()
 
-    systemMsg := "For each of the following transaction descriptions, give an overall category they fit in.  The categories to choose from must be from the following:Food, Gas, Entertainment, Shopping, Subscriptions, Transfers, Alcohol, Income, Other. Format the output by putting the index number provided, a colon, and then the category."
+    systemMsg := "For each of the following transaction descriptions, give an overall category they fit in.  The categories to choose from must be from the following:Food-1, Gas-2, Entertainment-3, Shopping-4, Subscriptions-5, Transfers-6, Alcohol-7, Income-8, Other-9. Format the output by putting the index number provided, a colon, and then the category id number(1-9)."
 
     req := openai.ChatCompletionRequest{
         Model: "o3-mini", 

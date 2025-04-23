@@ -77,6 +77,8 @@
 <body>
   <div id="top-bar">
     <span id="user-info"></span>
+    <button onclick="window.location.href='budgets.html'" style="margin-left: auto;">Budgets & Goals</button>
+
   </div>
 
   <div class="main-container">
@@ -88,6 +90,18 @@
           <input type="file" id="csv-file" name="csv-file" accept=".csv" required />
           <button type="submit">Upload</button>
         </form>
+      </div>
+
+      <div class="section">
+        <div id="date-range-container">
+          <label for="start-date">Start Date:</label>
+          <input type="date" id="start-date" />
+        
+          <label for="end-date">End Date:</label>
+          <input type="date" id="end-date" />
+        
+          <button id="apply-date-range">Apply Filter</button>
+        </div>        
       </div>
 
       <div class="section">
