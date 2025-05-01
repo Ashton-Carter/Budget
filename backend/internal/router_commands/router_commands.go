@@ -207,19 +207,42 @@ func GetBudgets(c *gin.Context) {
 
 	for rows.Next() {
 		var bud model.Budget
+		var ignored string;
 		if err := rows.Scan(
 			&bud.Budget_id,
 			&bud.User_id,
 			&bud.Name,
 			&bud.Created_at,
+			&ignored,
 			&bud.Category_id,
 			&bud.Amount,
 		); err != nil {
-			fmt.Println("Failed to scan row")
+			fmt.Println("Failed to scan row:", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to scan row"})
 			return
 		}
 		budgets = append(budgets, bud)
 	}
 	c.JSON(http.StatusOK, budgets)
+}
+
+func AddBudget(c *gin.Context) {
+	var input model.Budget
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input: " + err.Error()})
+		return
+	}
+
+	// ✅ Now you can access:
+	// input.UserID, input.Name, input.CategoryID, input.Amount
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Budget created successfully",
+		"data":    input,
+	})
+}
+
+func getGoals(c *gin.Context) {
+	
 }

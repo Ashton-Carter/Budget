@@ -86,6 +86,10 @@
       </ul>
     </div>
 
+    <label for="month-picker">View budgets for:</label>
+    <input type="month" id="month-picker" />
+    <button id="apply-month">Apply</button>
+
     <div class="section">
       <h2>Current Budgets</h2>
       <ul id="budgets-list">
@@ -97,6 +101,9 @@
 <div id="budget-modal" style="display: none;" class="modal-overlay">
     <div class="modal">
       <h3>Create New Budget</h3>
+
+      <label for="budget-name">Budget Name:</label>
+        <input type="text" id="budget-name" placeholder="e.g. Weekly Budget" />
   
       <label>
         <input type="radio" name="budget-type" value="total" checked />

@@ -30,10 +30,11 @@ type Transaction_type struct {
 }
 
 type Budget struct {
-	Budget_id int
-	User_id int
-	Name string
-	Created_at string
-	Category_id int
-	Amount float64
+	Budget_id int `json:"budget_id"`
+	User_id int `json:"user_id"`
+	Name string `json:"name"`
+	Created_at string `json:"created_at"`
+	Category_id int `json:"category_id"`
+	Amount float64 `json:"amount"`
+	Current_amount float64 `json:"current_amount"`
 }
