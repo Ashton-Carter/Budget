@@ -36,5 +36,31 @@ type Budget struct {
 	Created_at string `json:"created_at"`
 	Category_id int `json:"category_id"`
 	Amount float64 `json:"amount"`
+}
+
+type BudgetInput struct{
+	User_id string `json:"user_id"`
+	Name string `json:"name"`
+	Category_id int `json:"category_id"`
+	Amount float64 `json:"amount"`
+}
+
+type Goal struct {
+	Goal_id int `json:"goal_id"`
+	User_id int `json:"user_id"`
+	Name string `json:"name"`
+	Created_at string `json:"created_at"`
+	Amount float64 `json:"amount"`
 	Current_amount float64 `json:"current_amount"`
+}
+
+type GoalInput struct {
+	Goal_id int `json:"goal_id"`
+	Amount float64 `json:"amount"`
+}
+
+type NewGoal struct {
+	User_id string `json:"user_id"`
+	Name string `json:"name"`
+	Amount float64 `json:"amount"`
 }

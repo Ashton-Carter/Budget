@@ -19,6 +19,86 @@ function initialLoad(){
     console.log("User object in localStorage:", user);
 }
 
+let currentGoalId = null;
+
+function showAddToGoalModal(goalId) {
+  currentGoalId = goalId;
+  document.getElementById("goal-add-amount").value = "";
+  document.getElementById("goal-modal").style.display = "flex";
+}
+
+function hideAddToGoalModal() {
+  currentGoalId = null;
+  document.getElementById("goal-modal").style.display = "none";
+}
+
+document.getElementById("confirm-add-to-goal").addEventListener("click", async () => {
+  const amount = parseFloat(document.getElementById("goal-add-amount").value);
+  if (isNaN(amount) || amount <= 0) {
+    alert("Please enter a valid amount.");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:8080/goals/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        goal_id: parseInt(currentGoalId),
+        amount: amount,
+      }),
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+
+    hideAddToGoalModal();
+    const updatedGoals = await fetchGoals();
+    populateGoals(updatedGoals);
+  } catch (err) {
+    console.error("Add to goal failed:", err);
+    alert("Could not add to goal.");
+  }
+});
+
+// Modal controls
+function showCreateGoalModal() {
+    document.getElementById("goal-name").value = "";
+    document.getElementById("goal-amount").value = "";
+    document.getElementById("create-goal-modal").style.display = "flex";
+  }
+  
+  function hideCreateGoalModal() {
+    document.getElementById("create-goal-modal").style.display = "none";
+  }
+  
+  // POST request to create a new goal
+  async function submitGoal(name, amount) {
+    const payload = {
+      user_id: user.google_id,
+      name: name,
+      amount: amount
+    };
+  
+    try {
+      const res = await fetch("http://localhost:8080/goals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+  
+      if (!res.ok) throw new Error(await res.text());
+  
+      const newGoals = await fetchGoals();
+      populateGoals(newGoals);
+      hideCreateGoalModal();
+    } catch (err) {
+      console.error("Failed to create goal:", err);
+      alert("Could not create goal.");
+    }
+  }
+  
+
+
 async function refreshBudgets(){
     try {
         const res = await fetch(`http://localhost:8080/budgets/${user.google_id}`);
@@ -37,7 +117,7 @@ function hideBudgetModal() {
   document.getElementById("budget-modal").style.display = "none";
 }
 
-function setupBudgetModal() {
+async function setupBudgetModal() {
   const typeRadios = document.getElementsByName("budget-type");
   const totalInput = document.getElementById("total-budget-input");
   const categoryInputs = document.getElementById("category-budget-inputs");
@@ -109,6 +189,7 @@ function setupBudgetModal() {
         }
     
         hideBudgetModal();
+
     }
   };
 }
@@ -121,6 +202,7 @@ async function submitBudget(name, categoryId, amount) {
       category_id: categoryId,
       amount: amount,
     };
+    console.log(JSON.stringify(payload));
   
     try {
       const res = await fetch("http://localhost:8080/budgets", {
@@ -138,6 +220,9 @@ async function submitBudget(name, categoryId, amount) {
   
       const data = await res.json();
       console.log("Budget created:", data);
+
+      const updatedBudgets = await refreshBudgets();
+        await displayBudgets(updatedBudgets);
     } catch (err) {
       console.error("Failed to create budget:", err.message);
       alert("Could not create budget.");
@@ -151,6 +236,21 @@ function EventListeners(){
         setupBudgetModal();
         showBudgetModal();
       });
+    document.getElementById("create-goal-btn").addEventListener("click", () => {
+        showCreateGoalModal();
+    });
+    
+    document.getElementById("save-goal").addEventListener("click", () => {
+        const name = document.getElementById("goal-name").value.trim();
+        const amount = parseFloat(document.getElementById("goal-amount").value);
+        
+        if (!name || isNaN(amount) || amount <= 0) {
+            alert("Please enter a valid name and amount.");
+            return;
+        }
+        
+        submitGoal(name, amount);
+    });
       
 }
 function ApplyMonthBudgets(budgets){
@@ -260,22 +360,59 @@ function populateBudgets(budgets, transactionMap) {
     });
   }
 
-async function populateGoals(){
-    const res = await fetch(`http://localhost:8080/goals/${user.google_id}`);
-    const goals = await res.json();
-    console.log(goals);
-}
+  async function fetchGoals() {
+    try {
+      const res = await fetch(`http://localhost:8080/goals/${user.google_id}`);
+      if (!res.ok) throw new Error("Failed to fetch goals");
+      return await res.json();
+    } catch (err) {
+      console.error("Fetch goals error:", err);
+      return [];
+    }
+  }
+  
+  function populateGoals(goals) {
+    const container = document.getElementById("goals-list");
+    container.innerHTML = "";
+  
+    if (goals.length === 0) {
+      const li = document.createElement("li");
+      li.textContent = "No goals found.";
+      container.appendChild(li);
+      return;
+    }
+  
+    goals.forEach(goal => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <strong>${goal.name}</strong> — $${goal.current_amount.toFixed(2)} / $${goal.amount.toFixed(2)}
+        <button class="add-to-goal-btn" data-goal-id="${goal.goal_id}">Add</button>
+      `;
+      container.appendChild(li);
+    });
+  
+    // Add event listeners for "Add" buttons
+    document.querySelectorAll(".add-to-goal-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const goalId = btn.getAttribute("data-goal-id");
+        showAddToGoalModal(goalId);
+      });
+    });
+  }
 
 
 async function main(){
     initialLoad();
     
     let budgets = await refreshBudgets();
+    let goals = await fetchGoals();
     if(budgets){
         ApplyMonthBudgets(budgets);
         console.log("Displaying...");
     }
-    populateGoals();
+    if(goals){
+        populateGoals(goals);
+    }
     EventListeners();
 }
 

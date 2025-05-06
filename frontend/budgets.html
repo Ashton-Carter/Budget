@@ -134,6 +134,37 @@
       </div>
     </div>
   </div>
+
+  <!-- Add to Goal Modal -->
+<div id="goal-modal" style="display: none;" class="modal-overlay">
+    <div class="modal">
+      <h3>Add to Goal</h3>
+      <input type="number" id="goal-add-amount" placeholder="Enter amount" min="0" />
+      <div class="modal-buttons">
+        <button id="confirm-add-to-goal">Add</button>
+        <button onclick="hideAddToGoalModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Goal Modal -->
+<div id="create-goal-modal" style="display: none;" class="modal-overlay">
+    <div class="modal">
+      <h3>Create New Goal</h3>
+      <label for="goal-name">Goal Name:</label>
+      <input type="text" id="goal-name" placeholder="e.g. Save for trip" />
+  
+      <label for="goal-amount">Target Amount ($):</label>
+      <input type="number" id="goal-amount" min="0" />
+  
+      <div class="modal-buttons">
+        <button id="save-goal">Save</button>
+        <button onclick="hideCreateGoalModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  
   <script src="budgets.js" defer></script>
 </body>
 </html>

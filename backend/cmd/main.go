@@ -21,8 +21,12 @@ func main() {
     r.GET("/budgets/:google_id", router_commands.GetBudgets)
     r.POST("/upload", router_commands.FromCSV)
     r.POST("/budgets", router_commands.AddBudget)
-    r.GET("/goals", router_commands.getGoals)
+    r.GET("/goals/:google_id", router_commands.GetGoals)
+    r.POST("/goals/add", router_commands.AddToGoal)
+    r.POST("/goals", router_commands.AddGoal)
+
     r.Run(":8080")
+    
 
     fmt.Println("Done")
 }
