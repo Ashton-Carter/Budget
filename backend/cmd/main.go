@@ -18,6 +18,7 @@ func main() {
     r.POST("/auth/google", router_commands.GoogleAuth)
     r.GET("/users/:google_id", router_commands.GetUser)
     r.GET("/transactions/:google_id", router_commands.GetTransactions)
+    r.GET("/categorytotals/:google_id", router_commands.Get_Monthly_Totals)
     r.GET("/budgets/:google_id", router_commands.GetBudgets)
     r.POST("/upload", router_commands.FromCSV)
     r.POST("/budgets", router_commands.AddBudget)

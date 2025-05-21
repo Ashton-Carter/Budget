@@ -64,3 +64,8 @@ type NewGoal struct {
 	Name string `json:"name"`
 	Amount float64 `json:"amount"`
 }
+
+type CategoryTotals struct {
+	Name string `json:"name"`
+	Total float64 `json:"total"`
+}

@@ -15,6 +15,16 @@ async function fetchTransactions(start, end) {
   }
 }
 
+async function fetchTotals(start, end) {
+  try {
+    const res = await fetch(`http://localhost:8080/categorytotals/${user.google_id}?start_date=${start}&end_date=${end}`);
+    return await res.json();
+  } catch (err) {
+    console.error("Fetch failed:", err);
+    return null;
+  }
+}
+
 // ========== DATA TRANSFORMATION ========== //
 function buildRunningTotals(transactions) {
   if (!transactions) return null;
@@ -93,19 +103,18 @@ function createChart(transactions) {
   });
 }
 
-function renderCategoryTotals(transactions) {
+function renderCategoryTotals(cat_totals) {
   const items = ["Food", "Gas", "Entertainment", "Shopping", "Subscriptions", "Transfers", "Alcohol", "Other"];
   let itemsPrice = {};
   let totalSpending = 0;
   const list = document.createElement("ul");
 
-  transactions.forEach(tx => {
-    const { Amount } = tx.Transaction;
-    const category = tx.T_type;
-    if (Amount > 0) return;
+  cat_totals.forEach(tx => {
+    const Amount = tx.total;
+    const category = tx.name;
 
     totalSpending += Amount;
-    itemsPrice[category] = (itemsPrice[category] || 0) + Amount;
+    itemsPrice[category] = Amount;
   });
 
   document.getElementById("total-spending").textContent = Math.abs(totalSpending.toFixed(2));
@@ -182,16 +191,19 @@ function setupDateListener(){
 // ========== MAIN UI LOAD ========== //
 async function refreshUI() {
   const transactions = await fetchTransactions(document.getElementById("start-date").value, document.getElementById("end-date").value);
+  const cat_totals = await fetchTotals(document.getElementById("start-date").value, document.getElementById("end-date").value);
+
   if (!transactions || transactions.length == 0) {
     alert("No transactions found. Please upload a CSV file to continue or pick different date range");
     document.getElementById("csv-form").style.display = "block";
     return;
   }
-  
+
   document.getElementById("csv-form").style.display = "none";
   createChart(transactions);
   renderMonthlyTotals(buildMonthlyTotals(transactions));
-  renderCategoryTotals(transactions);
+  
+  renderCategoryTotals(cat_totals);
 }
 
 async function setup() {

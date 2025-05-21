@@ -387,6 +387,8 @@ function populateBudgets(budgets, transactionMap) {
       li.innerHTML = `
         <strong>${goal.name}</strong> — $${goal.current_amount.toFixed(2)} / $${goal.amount.toFixed(2)}
         <button class="add-to-goal-btn" data-goal-id="${goal.goal_id}">Add</button>
+        <button class="delete-goal-btn" data-goal-id="${goal.goal_id}">Delete</button>
+
       `;
       container.appendChild(li);
     });
@@ -398,8 +400,38 @@ function populateBudgets(budgets, transactionMap) {
         showAddToGoalModal(goalId);
       });
     });
+
+    document.querySelectorAll(".delete-goal-btn").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const goalId = btn.getAttribute("data-goal-id");
+          const confirmed = confirm("Are you sure you want to delete this goal?");
+          if (confirmed) {
+            await deleteGoal(goalId);
+          }
+        });
+      });
   }
 
+
+  async function deleteGoal(goalId) {
+    try {
+      const res = await fetch(`http://localhost:8080/goals/${goalId}`, {
+        method: "DELETE"
+      });
+  
+      if (!res.ok) {
+        const errMsg = await res.text();
+        throw new Error(errMsg);
+      }
+  
+      const updatedGoals = await fetchGoals();
+      populateGoals(updatedGoals);
+    } catch (err) {
+      console.error("Failed to delete goal:", err);
+      alert("Could not delete goal.");
+    }
+  }
+  
 
 async function main(){
     initialLoad();

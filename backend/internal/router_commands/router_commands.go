@@ -449,3 +449,57 @@ func AddGoal(c *gin.Context){
 	}
 
 }
+
+func Get_Monthly_Totals(c *gin.Context){
+	sql_command := 
+	`SELECT categories.name, sum(transactions.amount) as total
+    from users
+    INNER JOIN transactions
+             ON users.id = transactions.user_id
+    INNER JOIN categories
+             ON transactions.category = categories.category_id
+    WHERE google_id = ?
+    AND transactions.posting_date BETWEEN ? AND ?
+	AND transactions.amount < 0
+    GROUP BY categories.name;`
+
+
+	google_id := c.Param("google_id")
+	start_date := c.Query("start_date")
+	end_date := c.Query("end_date")
+	connect, db := sql_logic.Connect_to_sql()
+	if !connect {
+		fmt.Println("Database connection error")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database connection error"})
+		return
+	}
+	defer db.Close()
+	fmt.Println(google_id, start_date, end_date)
+	rows, rerr := db.Query(sql_command, google_id, start_date, end_date)
+	var cat_totals []model.CategoryTotals
+
+	if rerr == sql.ErrNoRows {
+		fmt.Println("Done, no rows!")
+		c.JSON(http.StatusOK, cat_totals)
+		return
+	} else if rerr != nil {
+		fmt.Println("Database error finding user_id or dates", rerr)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error finding user_id or dates"})
+		return
+	}
+
+
+	for rows.Next() {
+		var tx model.CategoryTotals
+		if err := rows.Scan(
+			&tx.Name,
+			&tx.Total,
+		); err != nil {
+			fmt.Println("Failed to scan row", "\n", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to scan row"})
+			return
+		}
+		cat_totals = append(cat_totals, tx)
+	}
+	c.JSON(http.StatusOK, cat_totals)
+}
