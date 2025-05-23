@@ -4,7 +4,6 @@ if (!user) location.href = "/index.html";
 
 let chart = null;
 
-// ========== FETCH ========== //
 async function fetchTransactions(start, end) {
   try {
     const res = await fetch(`http://localhost:8080/transactions/${user.google_id}?start_date=${start}&end_date=${end}`);
@@ -25,7 +24,6 @@ async function fetchTotals(start, end) {
   }
 }
 
-// ========== DATA TRANSFORMATION ========== //
 function buildRunningTotals(transactions) {
   if (!transactions) return null;
 
@@ -74,7 +72,6 @@ function buildMonthlyTotals(transactions) {
   return monthlyTotals;
 }
 
-// ========== RENDER UI ========== //
 function renderMonthlyTotals(totals) {
   const list = document.getElementById("monthly-totals");
   list.innerHTML = "";
@@ -131,7 +128,6 @@ function renderCategoryTotals(cat_totals) {
   container.appendChild(list);
 }
 
-// ========== EVENT HANDLERS ========== //
 function setupUploadListener() {
   document.getElementById("csv-form").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -188,7 +184,6 @@ function setupDateListener(){
   });
 }
 
-// ========== MAIN UI LOAD ========== //
 async function refreshUI() {
   const transactions = await fetchTransactions(document.getElementById("start-date").value, document.getElementById("end-date").value);
   const cat_totals = await fetchTotals(document.getElementById("start-date").value, document.getElementById("end-date").value);

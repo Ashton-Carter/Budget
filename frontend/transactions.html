@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Transactions</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="transactions.css" />
+</head>
+<body>
+  <div id="top-bar">
+    <span id="user-info">Loading...</span>
+    <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
+  </div>
+
+  <div class="container">
+    <h2>Manage Transactions</h2>
+
+    <button id="save-to-file">Save To File (.csv)</button>
+    <button id="add-transaction-btn">Add Transaction</button>
+
+    <!-- Form to Add or Edit Transactions -->
+    <div id="transaction-form" class="modal-form" style="display: none;">
+      <h3 id="form-title">New Transaction</h3>
+      <input type="date" id="tx-date" />
+      <input type="text" id="tx-description" placeholder="Details" />
+      <input type="number" id="tx-amount" placeholder="Amount" />
+      <select id="tx-category">
+        <!-- Categories will be populated via JS -->
+      </select>
+      <div class="form-buttons">
+        <button id="save-transaction">Save</button>
+        <button id="cancel-transaction">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Transactions List -->
+    <div class="section">
+      <div id="transaction-table" class="transaction-list">
+      </div>
+    </div>
+  </div>
+
+  <script src="transactions.js" defer></script>
+</body>
+</html>

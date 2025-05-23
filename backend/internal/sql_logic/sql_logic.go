@@ -10,6 +10,7 @@ import(
 	"budgettracker/internal/model"
 )
 
+//Returns connection to sql
 func Connect_to_sql() (bool, *sql.DB){
 	load := godotenv.Load()
 	if load != nil {
@@ -25,13 +26,32 @@ func Connect_to_sql() (bool, *sql.DB){
 	return true, db
 }
 
+//Updates last login
 func LastLoginUpdate(google_id string){
+	sql_command := `
+	UPDATE users
+SET last_login = NOW()
+WHERE google_id = ?;
+`
+
+	connect, db := Connect_to_sql()
+	if !connect {
+		fmt.Println("Database connection error")
+		return
+	}
+	defer db.Close()
+
+	_, err := db.Exec(sql_command, google_id)
 	
+	if err != nil {
+		fmt.Println("Database error:\n", err)
+		return
+	}
 }
 
 
 
-
+//Inserst transaction to database
 func TranstoDV(records []model.Transaction_type, googleID string) {
 	res, db := Connect_to_sql()
 	if !res {

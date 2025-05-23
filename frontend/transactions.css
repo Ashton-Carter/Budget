@@ -1,0 +1,135 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body and container setup */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #top-bar {
+    padding: 0.75rem 1rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  #user-info {
+    font-size: 0.9rem;
+    color: #444;
+  }
+  
+  .container {
+    padding: 2rem;
+    max-width: 1000px;
+    margin: auto;
+    width: 100%;
+    flex-grow: 1;
+  }
+  
+  /* Section and headings */
+  .section {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  h2, h3 {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  /* Buttons */
+  button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 0.5rem;
+  }
+  
+  button:hover {
+    background-color: #2563eb;
+  }
+  
+  /* Form inputs */
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  select {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0.5rem 0 1rem 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Transaction form/modal */
+  #transaction-form {
+    margin-top: 1.5rem;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    padding: 1rem;
+    border-radius: 6px;
+  }
+  
+  .form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  
+  /* Transaction list */
+  .transaction-list {
+    margin-top: 1.5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+  }
+  
+  /* Each transaction row */
+  .transaction-row {
+    display: grid;
+    grid-template-columns: 150px 1fr 150px 100px;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+  }
+  
+  .transaction-row:nth-child(even) {
+    background-color: #f6f6f6;
+  }
+  
+  .transaction-row-header {
+    font-weight: bold;
+    background-color: #e2e8f0;
+  }
+  
+  .delete-tx-btn {
+    background-color: #ef4444; /* Tailwind-style red */
+    color: white;
+    border: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .delete-tx-btn:hover {
+    background-color: #dc2626; /* Darker red on hover */
+  }

@@ -9,20 +9,12 @@ import (
 	"mime/multipart"
 )
 
-// type Transaction struct {
-// 	Details string
-// 	Posting_date string
-// 	Description string
-// 	Amount float64
-// 	Type_ string
-// 	Balance float64
-// 	Check_Slip string
-// }
 
+//Header for the chase CSV file
 var correct_types [7]string= [7]string{"Details","Posting Date","Description","Amount","Type","Balance","Check or Slip #"}
 
 
-
+//Parses csv row to data type
 func ReadToTransaction(record []string) model.Transaction {
 	var transaction model.Transaction
 	transaction.Details = record[0]
@@ -50,7 +42,7 @@ func ReadToTransaction(record []string) model.Transaction {
 	return transaction
 }
 
-
+//Used for debugging
 func printTransaction(trans model.Transaction) {
 	fmt.Println("Details:", trans.Details)
 	fmt.Println("Posting Date:", trans.Posting_date) 
@@ -61,6 +53,7 @@ func printTransaction(trans model.Transaction) {
 	fmt.Println("Slip:", trans.Check_Slip)
 }
 
+//Transforms date format, used to limit data size
 func WithinLast3Months(dateStr string) bool {
     layout := "01/02/2006" // for MM/DD/YYYY
     postingDate, err := time.Parse(layout, dateStr)
@@ -80,7 +73,6 @@ func WithinLast3Months(dateStr string) bool {
 
 
 //temporary test from filepath func
-
 func ParseCSVFile(file multipart.File) []model.Transaction{
 	var transactions []model.Transaction
 	

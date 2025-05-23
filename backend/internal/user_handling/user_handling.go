@@ -9,6 +9,7 @@ import (
 
 )
 
+//Adds user to database
 func Add_user(username string, email string, google_id string, picture_url string){
 	res, _ := Find_user(google_id);
 	if res == -1 { return }
@@ -33,6 +34,7 @@ func Add_user(username string, email string, google_id string, picture_url strin
 	}
 }
 
+//Returs user
 func Find_user(googleID string) (int, model.User){
 
 	res, db := sql_logic.Connect_to_sql();

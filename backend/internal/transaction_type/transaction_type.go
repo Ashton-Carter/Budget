@@ -15,7 +15,7 @@ import (
 )
 
 
-
+//Full AI call/return
 func Get_types(transactions []model.Transaction) []model.Transaction_type{
 	//var with_types []Transaction_type
 	var prompt = Create_prompt(transactions)
@@ -23,6 +23,7 @@ func Get_types(transactions []model.Transaction) []model.Transaction_type{
 	return Add_types(chat_response, transactions)
 }
 
+//creates string to give to AI CALL
 func Create_prompt(transactions []model.Transaction) string {
 	var prompt string = ""
 	for i, transaction := range transactions {
@@ -33,7 +34,7 @@ func Create_prompt(transactions []model.Transaction) string {
 
 
 
-
+//Sends openAI request
 func AiCall(prompt string) string {
 	//GET RID OF THIS BEFORE PRODUCTION
 	err := godotenv.Load()
@@ -70,6 +71,7 @@ func AiCall(prompt string) string {
     return resp.Choices[0].Message.Content
 }
 
+//Parses AI response
 func Add_types(chat_response string, transactions []model.Transaction) []model.Transaction_type{
 	var transaction_final []model.Transaction_type
 

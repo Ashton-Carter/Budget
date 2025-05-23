@@ -144,7 +144,6 @@ li {
   margin-top: 1.5rem;
 }
 
-/* ===== Responsive ===== */
 @media (max-width: 600px) {
   .modal {
     width: 90%;

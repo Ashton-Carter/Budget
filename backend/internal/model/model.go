@@ -4,7 +4,9 @@ import (
 	
 )
 
+//Holds all the data types used, Go requires a datatype for sending/recieving data over http
 type Transaction struct {
+	Id int
 	Details string
 	Posting_date string
 	Description string
@@ -68,4 +70,25 @@ type NewGoal struct {
 type CategoryTotals struct {
 	Name string `json:"name"`
 	Total float64 `json:"total"`
+}
+
+type Category struct {
+	Name string `json:"name"`
+	Category_id float64 `json:"category_id"`
+}
+
+type EditTransactionInput struct {
+	GoogleID   string  `json:"google_id"`
+	Date       string  `json:"date"`
+	Description string `json:"description"`
+	Amount     float64 `json:"amount"`
+	CategoryID int     `json:"category_id"`
+}
+
+type NewTransactionInput struct {
+	GoogleID    string  `json:"google_id"`
+	Date        string  `json:"date"`
+	Description string  `json:"description"`
+	Amount      float64 `json:"amount"`
+	CategoryID  int     `json:"category_id"`
 }

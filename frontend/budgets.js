@@ -1,5 +1,5 @@
 let user = JSON.parse(localStorage.getItem("user"));
-const categories = ["Food", "Gas", "Entertainment", "Shopping", "Subscriptions", "Transfers", "Alcohol", "Other"];
+const categories = ["Food", "Gas", "Entertainment", "Shopping", "Subscriptions", "Transfers", "Alcohol", "Other", "total"];
 const categoryMap = {
     Food: 1,
     Gas: 2,
@@ -9,7 +9,7 @@ const categoryMap = {
     Transfers: 6,
     Alcohol: 7,
     Other: 9,
-    total: 0
+    total: 10
   };
 
 function initialLoad(){
@@ -165,8 +165,7 @@ async function setupBudgetModal() {
         return;
       }
   
-      // Call submitBudget with category_id = 0 for "By Total"
-      submitBudget(name, 0, total);
+      submitBudget(name, 10, total);
       hideBudgetModal();
   
     } else if (type === "category") {
@@ -303,10 +302,10 @@ function getTransactionAmounts(transactions){
         } else {
             transactionMap.set(catID, Math.abs(transaction.Transaction.Amount));
         }
-        if(transactionMap.has(0)){
-            transactionMap.set(0, transactionMap.get(0) + Math.abs(transaction.Transaction.Amount));
+        if(transactionMap.has(10)){
+            transactionMap.set(10, transactionMap.get(10) + Math.abs(transaction.Transaction.Amount));
         } else {
-            transactionMap.set(0, Math.abs(transaction.Transaction.Amount));
+            transactionMap.set(10, Math.abs(transaction.Transaction.Amount));
         }
     });
     console.log(transactionMap);
@@ -346,6 +345,12 @@ function populateBudgets(budgets, transactionMap) {
       const title = document.createElement("strong");
       title.textContent = name;
       budgetItem.appendChild(title);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.classList.add("delete-budget-btn");
+      deleteBtn.dataset.budgetId = budgetId;
+      budgetItem.appendChild(deleteBtn);
   
       const innerList = document.createElement("ul");
       categoryItems.forEach(([catID, amt]) => {
@@ -358,6 +363,14 @@ function populateBudgets(budgets, transactionMap) {
       budgetItem.appendChild(innerList);
       container.appendChild(budgetItem);
     });
+
+    document.querySelectorAll(".delete-budget-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const budgetId = btn.dataset.budgetId;
+          deleteBudget(budgetId);
+        });
+      });
+      
   }
 
   async function fetchGoals() {
@@ -415,7 +428,7 @@ function populateBudgets(budgets, transactionMap) {
 
   async function deleteGoal(goalId) {
     try {
-      const res = await fetch(`http://localhost:8080/goals/${goalId}`, {
+      const res = await fetch(`http://localhost:8080/goals/?goal_id=${goalId}&user_id=${user.google_id}`, {
         method: "DELETE"
       });
   
@@ -431,6 +444,26 @@ function populateBudgets(budgets, transactionMap) {
       alert("Could not delete goal.");
     }
   }
+
+  async function deleteBudget(budgetId) {
+    try {
+      const res = await fetch(`http://localhost:8080/budgets/?budget_id=${budgetId}&user_id=${user.google_id}`, {
+        method: "DELETE"
+      });
+  
+      if (!res.ok) {
+        const errMsg = await res.text();
+        throw new Error(errMsg);
+      }
+      const updatedBudgets = await refreshBudgets();
+      displayBudgets(updatedBudgets);
+    } catch (err) {
+      console.error("Failed to delete budget:", err);
+      alert("Could not delete budget.");
+    }
+  }
+
+
   
 
 async function main(){
